@@ -15,3 +15,27 @@ static int led_thread2_init(void);
 static void led_thread1_entry(void *parameter);
 static void led_thread2_entry(void *parameter);
 
+
+
+
+
+
+
+
+
+
+/* 线程1：慢闪烁（500ms） */
+static void led_thread1_entry(void *parameter)
+{
+    while (1)
+    {
+        // 慢闪
+        rt_pin_write(LED_PIN, PIN_LOW);
+        rt_thread_mdelay(500);
+        rt_pin_write(LED_PIN, PIN_HIGH);
+        rt_thread_mdelay(500);
+        // 发送信号量触发线程2
+        rt_sem_release(&led_sem);
+        rt_kprintf("线程1：发送快闪信号\n");
+    }
+}
