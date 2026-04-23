@@ -23,8 +23,6 @@ static void led_init(void)
     rt_kprintf("LED初始化完成！\n");
 }
 
-
-
 /* 线程1：慢闪烁（500ms） */
 static void led_thread1_entry(void *parameter)
 {
