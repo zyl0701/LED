@@ -5,7 +5,7 @@
 #include <board.h>
 
 #define LED_PIN GET_PIN(B, 5)  // PB5引脚
-
+/*信号量结构体*/
 static struct rt_semaphore led_sem;
 =======
 /* 函数声明（解决未定义报错） */
@@ -15,12 +15,13 @@ static int led_thread2_init(void);
 static void led_thread1_entry(void *parameter);
 static void led_thread2_entry(void *parameter);
 
-
-
-
-
-
-
+/* LED初始化 */
+static void led_init(void)
+{
+    rt_pin_mode(LED_PIN, PIN_MODE_OUTPUT);
+    rt_pin_write(LED_PIN, PIN_HIGH);  // 初始熄灭
+    rt_kprintf("LED初始化完成！\n");
+}
 
 
 
