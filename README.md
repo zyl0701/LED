@@ -38,3 +38,13 @@ static void led_thread1_entry(void *parameter)
         rt_kprintf("线程1：发送快闪信号\n");
     }
 }
+/* 主函数 */
+int main(void)
+{
+    // 1. 初始化LED
+    led_init();
+    
+    // 2. 初始化信号量
+    rt_sem_init(&led_sem, "led_sem", 0, RT_IPC_FLAG_PRIO);
+    rt_kprintf("信号量创建完成，启动多线程\n");
+}
