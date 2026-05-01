@@ -92,4 +92,8 @@ int main(void)
     // 2. 初始化信号量
     rt_sem_init(&led_sem, "led_sem", 0, RT_IPC_FLAG_PRIO);
     rt_kprintf("信号量创建完成，启动多线程\n");
+	  led_thread1_init();
+    led_thread2_init();
+    
+    return 0;
 }
