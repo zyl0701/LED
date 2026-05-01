@@ -14,14 +14,17 @@ static int led_thread1_init(void);
 static int led_thread2_init(void);
 static void led_thread1_entry(void *parameter);
 static void led_thread2_entry(void *parameter);
-
+/*让编译器在  main  函数调用它们时，不会报“未定义”错误。 */
 /* LED初始化 */
+
 static void led_init(void)
 {
     rt_pin_mode(LED_PIN, PIN_MODE_OUTPUT);
     rt_pin_write(LED_PIN, PIN_HIGH);  // 初始熄灭
     rt_kprintf("LED初始化完成！\n");
 }
+/*将  PB5  引脚设置为输出模式，用于驱动LED。
+- 初始化时设置引脚为高电平，确保LED一开始是熄灭状态。*/
 
 /* 线程1：慢闪烁（500ms） */
 static void led_thread1_entry(void *parameter)
@@ -68,6 +71,9 @@ static int led_thread1_init(void)
         rt_thread_startup(tid);
     return 0;
 }
+/*创建并初始化线程1，命名为  led_slow 。
+配置线程的栈大小、优先级和时间片，优先级为10。*/
+
 /* 线程2初始化 */
 static int led_thread2_init(void)
 {
