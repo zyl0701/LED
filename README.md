@@ -68,6 +68,19 @@ static int led_thread1_init(void)
         rt_thread_startup(tid);
     return 0;
 }
+/* 线程2初始化 */
+static int led_thread2_init(void)
+{
+    rt_thread_t tid = rt_thread_create("led_fast",
+                                        led_thread2_entry,
+                                        RT_NULL,
+                                        512,
+                                        9,     // 优先级高于线程1
+                                        10);
+    if (tid != RT_NULL)
+        rt_thread_startup(tid);
+    return 0;
+}
 
 
 /* 主函数 */
