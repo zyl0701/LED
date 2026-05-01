@@ -11,3 +11,13 @@
 static struct rt_semaphore key_sem;      // 信号量：按键触发
 static struct rt_mailbox msg_mb;         // 邮箱：线程间数据传输
 static char mb_pool[128];                // 邮箱存储池
+
+
+
+
+
+
+
+
+git checkout -b driver-main
+# 负责：硬件初始化、LED线程、main函数、按键线程
