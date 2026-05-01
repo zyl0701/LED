@@ -7,8 +7,8 @@
 #define LED_PIN GET_PIN(B, 5)  // PB5引脚
 /*信号量结构体*/
 static struct rt_semaphore led_sem;
-=======
-/* 函数声明（解决未定义报错） */
+
+/* 函数声明 */
 static void led_init(void);
 static int led_thread1_init(void);
 static int led_thread2_init(void);
@@ -38,6 +38,27 @@ static void led_thread1_entry(void *parameter)
         rt_kprintf("线程1：发送快闪信号\n");
     }
 }
+/* 线程2：快闪烁（100ms，由线程1触发） */
+static void led_thread2_entry(void *parameter)
+{
+    while (1)
+    {
+        // 等待信号量
+        rt_sem_take(&led_sem, RT_WAITING_FOREVER);
+        rt_kprintf("线程2：收到信号，开始快闪\n");
+        for (int i = 0; i < 5; i++)
+        {
+            rt_pin_write(LED_PIN, PIN_LOW);
+            rt_thread_mdelay(100);
+            rt_pin_write(LED_PIN, PIN_HIGH);
+            rt_thread_mdelay(100);
+        }
+    }
+}
+
+
+
+
 /* 主函数 */
 int main(void)
 {
