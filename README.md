@@ -55,8 +55,19 @@ static void led_thread2_entry(void *parameter)
         }
     }
 }
-
-
+/* 线程1初始化 */
+static int led_thread1_init(void)
+{
+    rt_thread_t tid = rt_thread_create("led_slow",
+                                        led_thread1_entry,
+                                        RT_NULL,
+                                        512,  // 栈大小
+                                        10,    // 优先级
+                                        10);   // 时间片
+    if (tid != RT_NULL)
+        rt_thread_startup(tid);
+    return 0;
+}
 
 
 /* 主函数 */
