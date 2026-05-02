@@ -32,3 +32,27 @@ static void buzzer_init(void)
     rt_pin_write(BUZZER_PIN, PIN_HIGH);  // 初始关闭（假设高电平关闭）
     rt_kprintf("[驱动] 蜂鸣器初始化完成 (PG2)\n");
 }
+/* 线程1：按键检测线程 */
+static void key_detect_thread_entry(void *parameter)
+{
+    rt_uint8_t last_state = PIN_HIGH;  // 上次按键状态
+    rt_uint8_t current_state;
+    
+    while (1)
+    {
+        current_state = rt_pin_read(KEY_PIN);
+        
+        // 检测下降沿（按键按下）
+        if (last_state == PIN_HIGH && current_state == PIN_LOW)
+        {
+            rt_kprintf("[线程1] 检测到按键按下\n");
+            rt_sem_release(&key_sem);  // 释放信号量通知线程2
+            
+            // 通过邮箱发送消息给线程3
+            char *msg = "key_pressed";
+            rt_mb_send(&msg_mb, (rt_ubase_t)msg);
+        }
+        last_state = current_state;
+        rt_thread_mdelay(20);  // 消抖延时
+    }
+}
