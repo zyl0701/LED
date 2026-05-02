@@ -35,3 +35,17 @@ static void key_detect_thread_init(void)
     else
         rt_kprintf("[错误] 按键检测线程创建失败\n");
 }
+
+static void led_control_thread_init(void)
+{
+    rt_thread_t tid = rt_thread_create("led_ctrl",
+                                        led_control_thread_entry,
+                                        RT_NULL,
+                                        512,
+                                        10,    // 优先级（较低）
+                                        10);
+    if (tid != RT_NULL)
+        rt_thread_startup(tid);
+    else
+        rt_kprintf("[错误] LED控制线程创建失败\n");
+}
