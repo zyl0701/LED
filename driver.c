@@ -56,3 +56,21 @@ static void key_detect_thread_entry(void *parameter)
         rt_thread_mdelay(20);  // 消抖延时
     }
 }
+static void led_control_thread_entry(void *parameter)
+{
+    while (1)
+    {
+        // 等待信号量（被按键触发）
+        rt_sem_take(&key_sem, RT_WAITING_FOREVER);
+        rt_kprintf("[线程2] 收到信号量，开始LED闪烁\n");
+        
+        // LED快闪3次
+        for (int i = 0; i < 3; i++)
+        {
+            rt_pin_write(LED_PIN, PIN_LOW);
+            rt_thread_mdelay(100);
+            rt_pin_write(LED_PIN, PIN_HIGH);
+            rt_thread_mdelay(100);
+        }
+    }
+}
