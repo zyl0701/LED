@@ -33,34 +33,27 @@ static void buzzer_init(void)
 }
 
 
-
-
-
-
-
 git checkout -b driver-main
 # 负责：硬件初始化、LED线程、main函数、按键线程
-/*按键检测*/
-static void key_detect_thread_entry(void *parameter)
+
+/*  线程3：蜂鸣器控制线程 */
+static void buzzer_control_thread_entry(void *parameter)
 {
-    rt_uint8_t last_state = PIN_HIGH;  // 上次按键状态
-    rt_uint8_t current_state;
+    rt_ubase_t msg;
     
     while (1)
     {
-        current_state = rt_pin_read(KEY_PIN);
-        
-        // 检测下降沿（按键按下）
-        if (last_state == PIN_HIGH && current_state == PIN_LOW)
+        // 等待邮箱消息
+        if (rt_mb_recv(&msg_mb, &msg, RT_WAITING_FOREVER) == RT_EOK)
         {
-            rt_kprintf("[线程1] 检测到按键按下\n");
-            rt_sem_release(&key_sem);  // 释放信号量通知线程2
+            rt_kprintf("[线程3] 收到邮箱消息: %s, 启动蜂鸣器\n", (char *)msg);
             
-            // 通过邮箱发送消息给线程3
-            char *msg = "key_pressed";
-            rt_mb_send(&msg_mb, (rt_ubase_t)msg);
+            // 蜂鸣器响500ms
+            rt_pin_write(BUZZER_PIN, PIN_LOW);
+            rt_thread_mdelay(500);
+            rt_pin_write(BUZZER_PIN, PIN_HIGH);
         }
-        last_state = current_state;
-        rt_thread_mdelay(20);  // 消抖延时
     }
 }
+git checkout -b thread-function
+# 负责：蜂鸣器线程、IPC机制
