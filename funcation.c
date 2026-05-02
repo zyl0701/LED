@@ -49,3 +49,16 @@ static void led_control_thread_init(void)
     else
         rt_kprintf("[错误] LED控制线程创建失败\n");
 }
+static void buzzer_control_thread_init(void)
+{
+    rt_thread_t tid = rt_thread_create("buzzer_ctrl",
+                                        buzzer_control_thread_entry,
+                                        RT_NULL,
+                                        512,
+                                        9,     // 优先级（中间）
+                                        10);
+    if (tid != RT_NULL)
+        rt_thread_startup(tid);
+    else
+        rt_kprintf("[错误] 蜂鸣器控制线程创建失败\n");
+}
