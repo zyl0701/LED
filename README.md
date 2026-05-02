@@ -57,3 +57,18 @@ static void buzzer_control_thread_entry(void *parameter)
 }
 git checkout -b thread-function
 # 负责：蜂鸣器线程、IPC机制
+
+/* ==================== 线程初始化函数 ==================== */
+static void key_detect_thread_init(void)
+{
+    rt_thread_t tid = rt_thread_create("key_detect",
+                                        key_detect_thread_entry,
+                                        RT_NULL,
+                                        1024,  // 栈大小
+                                        8,     // 优先级（较高）
+                                        10);
+    if (tid != RT_NULL)
+        rt_thread_startup(tid);
+    else
+        rt_kprintf("[错误] 按键检测线程创建失败\n");
+}
